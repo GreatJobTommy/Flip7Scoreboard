@@ -119,7 +119,7 @@ Este proyecto está licenciado bajo la **Creative Commons Attribution-NonCommerc
 - **Sin uso comercial** sin permiso
 - Atribución requerida
 
-Texto completo de la licencia: Consulta el archivo [LICENSE](LICENSE).
+Texto completo de la licencia: Consulta el archivo [LICENSE](LICENSE.md).
 
 ---
 
@@ -151,7 +151,7 @@ Texto completo de la licencia: Consulta el archivo [LICENSE](LICENSE).
 - **商業利用は許可なしでは不可**
 - 表示（クレジット）が必要
 
-完全なライセンス条文： [LICENSE](LICENSE) ファイルを参照してください。
+完全なライセンス条文： [LICENSE](LICENSE.md) ファイルを参照してください。
 
 ---
 
@@ -183,7 +183,7 @@ Este projeto está licenciado sob a **Creative Commons Attribution-NonCommercial
 - **Uso comercial não permitido** sem autorização
 - Atribuição necessária
 
-Texto completo da licença: Veja o arquivo [LICENSE](LICENSE).
+Texto completo da licença: Veja o arquivo [LICENSE](LICENSE.md).
 
 ---
 
@@ -215,7 +215,7 @@ Texto completo da licença: Veja o arquivo [LICENSE](LICENSE).
 - **Коммерческое использование запрещено** без разрешения
 - Требуется указание авторства
 
-Полный текст лицензии: см. файл [LICENSE](LICENSE).
+Полный текст лицензии: см. файл [LICENSE](LICENSE.md).
 
 ---
 
@@ -247,7 +247,7 @@ Texto completo da licença: Veja o arquivo [LICENSE](LICENSE).
 - **未经许可不得用于商业用途**
 - 需要署名
 
-完整许可文本：请参阅 [LICENSE](LICENSE) 文件。
+完整许可文本：请参阅 [LICENSE](LICENSE.md) 文件。
 
 ---
 
@@ -279,7 +279,7 @@ Ce projet est sous licence **Creative Commons Attribution-NonCommercial 4.0 Inte
 - **Aucune utilisation commerciale** sans autorisation
 - Attribution requise
 
-Texte complet de la licence : voir le fichier [LICENSE](LICENSE).
+Texte complet de la licence : voir le fichier [LICENSE](LICENSE.md).
 
 ---
 
@@ -311,7 +311,7 @@ Questo progetto è distribuito sotto la licenza **Creative Commons Attribution-N
 - **Nessun uso commerciale** senza autorizzazione
 - Attribuzione richiesta
 
-Testo completo della licenza: consulta il file [LICENSE](LICENSE).
+Testo completo della licenza: consulta il file [LICENSE](LICENSE.md).
 
 ---
 
@@ -343,7 +343,7 @@ Ez a projekt a **Creative Commons Attribution-NonCommercial 4.0 International Li
 - **Kereskedelmi felhasználás engedély nélkül tilos**
 - Szerzőség feltüntetése kötelező
 
-A teljes licencszöveg: lásd a [LICENSE](LICENSE) fájlt.
+A teljes licencszöveg: lásd a [LICENSE](LICENSE.md) fájlt.
 
 ---
 
@@ -375,7 +375,7 @@ A teljes licencszöveg: lásd a [LICENSE](LICENSE) fájlt.
 - **상업적 이용은 허가 없이 불가**
 - 저작자 표시 필요
 
-전체 라이선스 텍스트: [LICENSE](LICENSE) 파일 참조.
+전체 라이선스 텍스트: [LICENSE](LICENSE.md) 파일 참조.
 
 ---
 
@@ -407,7 +407,7 @@ Bu proje **Creative Commons Attribution-NonCommercial 4.0 International License*
 - **Ticari kullanım izinsiz yasaktır**
 - Atıf zorunludur
 
-Tam lisans metni: [LICENSE](LICENSE) dosyasına bakın.
+Tam lisans metni: [LICENSE](LICENSE.md) dosyasına bakın.
 
 ---
 
