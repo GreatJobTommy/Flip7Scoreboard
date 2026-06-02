@@ -41,7 +41,7 @@ Klicke auf deine Sprache, um direkt zum Abschnitt zu springen:
 - Vollständige Unterstützung von 12 Sprachen
 
 ### Verwendung
-1. Lade die Datei `punktezähler.html` herunter
+1. Lade die Datei `Flip7 PointTracker_Multilingual.html` herunter
 2. Öffne sie im Browser (auch offline möglich)
 
 > **Hinweis:** Auf manchen Smartphones (besonders bei iOS) kann es notwendig sein, eine spezielle HTML-Viewer-App wie „HTML Viewer“ oder „Documents“ zu installieren, um die `.html`-Datei direkt zu öffnen.
@@ -55,7 +55,7 @@ Dieses Projekt ist lizenziert unter der **Creative Commons Attribution-NonCommer
 - **Keine kommerzielle Nutzung** ohne Genehmigung
 - Namensnennung erforderlich
 
-Vollständiger Lizenztext: Siehe Datei [LICENSE](LICENSE)
+Vollständiger Lizenztext: Siehe Datei [LICENSE](LICENSE.md)
 
 ---
 
@@ -73,7 +73,7 @@ Vollständiger Lizenztext: Siehe Datei [LICENSE](LICENSE)
 - Full support for 12 languages
 
 ### How to use
-1. Download the file `punktezähler.html`
+1. Download the file `Flip7 PointTracker_Multilingual.html`
 2. Open it in any browser (works completely offline)
 
 > **Note:** On some smartphones (especially iOS), you may need to install a dedicated HTML viewer app such as “HTML Viewer” or “Documents” to open the `.html` file directly.
@@ -87,7 +87,7 @@ This project is licensed under the **Creative Commons Attribution-NonCommercial 
 - **No commercial use** without permission
 - Attribution required
 
-Full license text: See the [LICENSE](LICENSE) file.
+Full license text: See the [LICENSE](LICENSE.md) file.
 
 ---
 
@@ -105,7 +105,7 @@ Full license text: See the [LICENSE](LICENSE) file.
 - Soporte completo para 12 idiomas
 
 ### Cómo usarlo
-1. Descarga el archivo `punktezähler.html`
+1. Descarga el archivo `Flip7 PointTracker_Multilingual.html`
 2. Ábrelo en cualquier navegador (funciona sin conexión)
 
 > **Nota:** En algunos smartphones (especialmente en iOS) puede ser necesario instalar una aplicación específica para ver archivos HTML, como “HTML Viewer” o “Documents”, para abrir el archivo `.html` directamente.
@@ -137,7 +137,7 @@ Texto completo de la licencia: Consulta el archivo [LICENSE](LICENSE).
 - 12言語の完全対応
 
 ### 使い方
-1. `punktezähler.html` をダウンロード
+1. `Flip7 PointTracker_Multilingual.html` をダウンロード
 2. ブラウザで開く（オフラインでも動作）
 
 > **注意:** 一部のスマートフォン（特にiOS）では、`.html`ファイルを直接開くために「HTML Viewer」や「Documents」などの専用HTMLビューアアプリのインストールが必要になる場合があります。
@@ -169,7 +169,7 @@ Texto completo de la licencia: Consulta el archivo [LICENSE](LICENSE).
 - Suporte completo para 12 idiomas
 
 ### Como usar
-1. Baixe o arquivo `punktezähler.html`
+1. Baixe o arquivo `Flip7 PointTracker_Multilingual.html`
 2. Abra no navegador (funciona offline)
 
 > **Atenção:** Em alguns smartphones (especialmente no iOS), pode ser necessário instalar um aplicativo específico para visualizar arquivos HTML, como “HTML Viewer” ou “Documents”, para abrir o arquivo `.html` diretamente.
@@ -201,7 +201,7 @@ Texto completo da licença: Veja o arquivo [LICENSE](LICENSE).
 - Полная поддержка 12 языков
 
 ### Как использовать
-1. Скачайте файл `punktezähler.html`
+1. Скачайте файл `Flip7 PointTracker_Multilingual.html`
 2. Откройте его в браузере (работает без интернета)
 
 > **Примечание:** На некоторых смартфонах (особенно на iOS) может потребоваться установить специальное приложение для просмотра HTML-файлов, например «HTML Viewer» или «Documents», чтобы напрямую открыть файл `.html`.
@@ -233,7 +233,7 @@ Texto completo da licença: Veja o arquivo [LICENSE](LICENSE).
 - 完整支持 12 种语言
 
 ### 使用方法
-1. 下载 `punktezähler.html`
+1. 下载 `Flip7 PointTracker_Multilingual.html`
 2. 用浏览器打开（支持离线使用）
 
 > **注意：** 在某些智能手机上（尤其是 iOS），可能需要安装专门的 HTML 查看器应用（如 “HTML Viewer” 或 “Documents”）才能直接打开 `.html` 文件。
@@ -265,7 +265,7 @@ Texto completo da licença: Veja o arquivo [LICENSE](LICENSE).
 - Prise en charge complète de 12 langues
 
 ### Utilisation
-1. Téléchargez `punktezähler.html`
+1. Téléchargez `Flip7 PointTracker_Multilingual.html`
 2. Ouvrez-le dans un navigateur (fonctionne hors ligne)
 
 > **Remarque :** Sur certains smartphones (notamment iOS), il peut être nécessaire d’installer une application dédiée pour visualiser les fichiers HTML, comme « HTML Viewer » ou « Documents », afin d’ouvrir directement le fichier `.html`.
@@ -297,7 +297,7 @@ Texte complet de la licence : voir le fichier [LICENSE](LICENSE).
 - Supporto completo per 12 lingue
 
 ### Come usarlo
-1. Scarica `punktezähler.html`
+1. Scarica `Flip7 PointTracker_Multilingual.html`
 2. Aprilo nel browser (funziona offline)
 
 > **Nota:** Su alcuni smartphone (soprattutto iOS) potrebbe essere necessario installare un’app dedicata per visualizzare file HTML, come “HTML Viewer” o “Documents”, per aprire direttamente il file `.html`.
@@ -329,7 +329,7 @@ Testo completo della licenza: consulta il file [LICENSE](LICENSE).
 - Teljes támogatás 12 nyelvhez
 
 ### Használat
-1. Töltsd le a `punktezähler.html` fájlt
+1. Töltsd le a `Flip7 PointTracker_Multilingual.html` fájlt
 2. Nyisd meg böngészőben (offline is működik)
 
 > **Megjegyzés:** Egyes okostelefonokon (különösen iOS-en) szükség lehet egy dedikált HTML-megjelenítő alkalmazás telepítésére, például „HTML Viewer” vagy „Documents”, hogy közvetlenül megnyithasd a `.html` fájlt.
@@ -361,7 +361,7 @@ A teljes licencszöveg: lásd a [LICENSE](LICENSE) fájlt.
 - 12개 언어 완전 지원
 
 ### 사용 방법
-1. `punktezähler.html` 파일 다운로드
+1. `Flip7 PointTracker_Multilingual.html` 파일 다운로드
 2. 브라우저에서 열기 (오프라인에서도 작동)
 
 > **참고:** 일부 스마트폰(특히 iOS)에서는 `.html` 파일을 직접 열려면 “HTML Viewer” 또는 “Documents”와 같은 전용 HTML 뷰어 앱을 설치해야 할 수 있습니다.
@@ -393,7 +393,7 @@ A teljes licencszöveg: lásd a [LICENSE](LICENSE) fájlt.
 - 12 dil tam destek
 
 ### Kullanım
-1. `punktezähler.html` dosyasını indirin
+1. `Flip7 PointTracker_Multilingual.html` dosyasını indirin
 2. Tarayıcıda açın (internetsiz de çalışır)
 
 > **Not:** Bazı akıllı telefonlarda (özellikle iOS'ta) `.html` dosyasını doğrudan açmak için “HTML Viewer” veya “Documents” gibi özel bir HTML görüntüleyici uygulamasını yüklemeniz gerekebilir.
