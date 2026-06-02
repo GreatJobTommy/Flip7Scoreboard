@@ -1,6 +1,6 @@
 Creative Commons Attribution-NonCommercial 4.0 International License
 
-Copyright (c) 2026 [Ihr Name oder Firmenname]
+Copyright (c) 2026 Tom Ravach StorymotionFilms
 
 This work is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License.
 
