@@ -1,4 +1,5 @@
 # Flip7 Score
+<img width="474" height="979" alt="image" src="https://github.com/user-attachments/assets/408b05e2-d687-400c-9524-e2124a5406cb" />
 
 Ein einfacher, offline-fähiger Punktezähler für das Kartenspiel **Flip7** – optimiert für Smartphones.
 
