@@ -1,5 +1,4 @@
 # Flip7 Score
-<img width="474" height="979" alt="image" src="https://github.com/user-attachments/assets/408b05e2-d687-400c-9524-e2124a5406cb" />
 
 Ein einfacher, offline-fähiger Punktezähler für das Kartenspiel **Flip7** – optimiert für Smartphones.
 
@@ -44,6 +43,9 @@ Klicke auf deine Sprache, um direkt zum Abschnitt zu springen:
 ### Verwendung
 1. Lade die Datei `punktezähler.html` herunter
 2. Öffne sie im Browser (auch offline möglich)
+
+> **Hinweis:** Auf manchen Smartphones (besonders bei iOS) kann es notwendig sein, eine spezielle HTML-Viewer-App wie „HTML Viewer“ oder „Documents“ zu installieren, um die `.html`-Datei direkt zu öffnen.
+
 3. Spieleranzahl auswählen → optional Namen eingeben → Spiel starten
 
 ### Lizenz
@@ -73,6 +75,9 @@ Vollständiger Lizenztext: Siehe Datei [LICENSE](LICENSE)
 ### How to use
 1. Download the file `punktezähler.html`
 2. Open it in any browser (works completely offline)
+
+> **Note:** On some smartphones (especially iOS), you may need to install a dedicated HTML viewer app such as “HTML Viewer” or “Documents” to open the `.html` file directly.
+
 3. Select the number of players → optionally enter names → start the game
 
 ### License
@@ -102,6 +107,9 @@ Full license text: See the [LICENSE](LICENSE) file.
 ### Cómo usarlo
 1. Descarga el archivo `punktezähler.html`
 2. Ábrelo en cualquier navegador (funciona sin conexión)
+
+> **Nota:** En algunos smartphones (especialmente en iOS) puede ser necesario instalar una aplicación específica para ver archivos HTML, como “HTML Viewer” o “Documents”, para abrir el archivo `.html` directamente.
+
 3. Selecciona el número de jugadores → introduce nombres (opcional) → inicia la partida
 
 ### Licencia
@@ -131,6 +139,9 @@ Texto completo de la licencia: Consulta el archivo [LICENSE](LICENSE).
 ### 使い方
 1. `punktezähler.html` をダウンロード
 2. ブラウザで開く（オフラインでも動作）
+
+> **注意:** 一部のスマートフォン（特にiOS）では、`.html`ファイルを直接開くために「HTML Viewer」や「Documents」などの専用HTMLビューアアプリのインストールが必要になる場合があります。
+
 3. プレイヤー数を選択 → 名前を入力（任意） → ゲーム開始
 
 ### ライセンス
@@ -160,6 +171,9 @@ Texto completo de la licencia: Consulta el archivo [LICENSE](LICENSE).
 ### Como usar
 1. Baixe o arquivo `punktezähler.html`
 2. Abra no navegador (funciona offline)
+
+> **Atenção:** Em alguns smartphones (especialmente no iOS), pode ser necessário instalar um aplicativo específico para visualizar arquivos HTML, como “HTML Viewer” ou “Documents”, para abrir o arquivo `.html` diretamente.
+
 3. Escolha o número de jogadores → insira nomes (opcional) → inicie o jogo
 
 ### Licença
@@ -189,6 +203,9 @@ Texto completo da licença: Veja o arquivo [LICENSE](LICENSE).
 ### Как использовать
 1. Скачайте файл `punktezähler.html`
 2. Откройте его в браузере (работает без интернета)
+
+> **Примечание:** На некоторых смартфонах (особенно на iOS) может потребоваться установить специальное приложение для просмотра HTML-файлов, например «HTML Viewer» или «Documents», чтобы напрямую открыть файл `.html`.
+
 3. Выберите количество игроков → при желании введите имена → начните игру
 
 ### Лицензия
@@ -218,6 +235,9 @@ Texto completo da licença: Veja o arquivo [LICENSE](LICENSE).
 ### 使用方法
 1. 下载 `punktezähler.html`
 2. 用浏览器打开（支持离线使用）
+
+> **注意：** 在某些智能手机上（尤其是 iOS），可能需要安装专门的 HTML 查看器应用（如 “HTML Viewer” 或 “Documents”）才能直接打开 `.html` 文件。
+
 3. 选择玩家数量 → 可选填写姓名 → 开始游戏
 
 ### 许可证
@@ -247,6 +267,9 @@ Texto completo da licença: Veja o arquivo [LICENSE](LICENSE).
 ### Utilisation
 1. Téléchargez `punktezähler.html`
 2. Ouvrez-le dans un navigateur (fonctionne hors ligne)
+
+> **Remarque :** Sur certains smartphones (notamment iOS), il peut être nécessaire d’installer une application dédiée pour visualiser les fichiers HTML, comme « HTML Viewer » ou « Documents », afin d’ouvrir directement le fichier `.html`.
+
 3. Choisissez le nombre de joueurs → saisissez les noms (optionnel) → lancez la partie
 
 ### Licence
@@ -276,6 +299,9 @@ Texte complet de la licence : voir le fichier [LICENSE](LICENSE).
 ### Come usarlo
 1. Scarica `punktezähler.html`
 2. Aprilo nel browser (funziona offline)
+
+> **Nota:** Su alcuni smartphone (soprattutto iOS) potrebbe essere necessario installare un’app dedicata per visualizzare file HTML, come “HTML Viewer” o “Documents”, per aprire direttamente il file `.html`.
+
 3. Seleziona il numero di giocatori → inserisci i nomi (opzionale) → avvia la partita
 
 ### Licenza
@@ -305,6 +331,9 @@ Testo completo della licenza: consulta il file [LICENSE](LICENSE).
 ### Használat
 1. Töltsd le a `punktezähler.html` fájlt
 2. Nyisd meg böngészőben (offline is működik)
+
+> **Megjegyzés:** Egyes okostelefonokon (különösen iOS-en) szükség lehet egy dedikált HTML-megjelenítő alkalmazás telepítésére, például „HTML Viewer” vagy „Documents”, hogy közvetlenül megnyithasd a `.html` fájlt.
+
 3. Válaszd ki a játékosok számát → írd be a neveket (opcionális) → indítsd a játékot
 
 ### Licenc
@@ -334,6 +363,9 @@ A teljes licencszöveg: lásd a [LICENSE](LICENSE) fájlt.
 ### 사용 방법
 1. `punktezähler.html` 파일 다운로드
 2. 브라우저에서 열기 (오프라인에서도 작동)
+
+> **참고:** 일부 스마트폰(특히 iOS)에서는 `.html` 파일을 직접 열려면 “HTML Viewer” 또는 “Documents”와 같은 전용 HTML 뷰어 앱을 설치해야 할 수 있습니다.
+
 3. 플레이어 수 선택 → 이름 입력 (선택) → 게임 시작
 
 ### 라이선스
@@ -363,6 +395,9 @@ A teljes licencszöveg: lásd a [LICENSE](LICENSE) fájlt.
 ### Kullanım
 1. `punktezähler.html` dosyasını indirin
 2. Tarayıcıda açın (internetsiz de çalışır)
+
+> **Not:** Bazı akıllı telefonlarda (özellikle iOS'ta) `.html` dosyasını doğrudan açmak için “HTML Viewer” veya “Documents” gibi özel bir HTML görüntüleyici uygulamasını yüklemeniz gerekebilir.
+
 3. Oyuncu sayısını seçin → İsimleri girin (isteğe bağlı) → Oyunu başlatın
 
 ### Lisans
