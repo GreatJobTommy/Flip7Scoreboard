@@ -4,7 +4,7 @@
 
 Ein einfacher, offline-fähiger Punktezähler für das Kartenspiel **Flip7** – optimiert für Smartphones.
 
-Die App läuft komplett im Browser, benötigt keine Installation und funktioniert auch ohne Internetverbindung.
+Die HTML läuft komplett im Browser, benötigt keine Installation und funktioniert auch ohne Internetverbindung.
 
 ---
 
