@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Flip7 Score</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; user-select: none; -webkit-user-select: none; touch-action: manipulation; }
+        body { background-color: #0f0f1e; color: white; }
+        
+        #start-screen { height: 100vh; overflow-y: auto; padding: 30px 20px 40px; display: flex; flex-direction: column; align-items: center; }
+        #start-screen h1 { font-size: 42px; font-weight: 800; margin-bottom: 8px; letter-spacing: 2px; text-align: center; }
+        #start-screen .subtitle { font-size: 17px; opacity: 0.85; margin-bottom: 40px; text-align: center; }
+        
+        .player-selector { display: flex; flex-direction: column; align-items: center; gap: 16px; margin-bottom: 30px; width: 100%; max-width: 320px; }
+        .player-count-display { font-size: 72px; font-weight: 900; line-height: 1; min-width: 120px; text-align: center; color: #ffffff; }
+        .selector-controls { display: flex; align-items: center; gap: 24px; }
+        .selector-btn { width: 68px; height: 68px; border-radius: 50%; border: none; font-size: 36px; font-weight: 700; color: white; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+        .selector-btn.minus { background: linear-gradient(145deg, #444, #333); }
+        .selector-btn.plus { background: linear-gradient(145deg, #27ae60, #219a52); }
+        .selector-btn:active { transform: scale(0.92); }
+        .selector-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .max-hint { font-size: 13px; opacity: 0.6; margin-top: -8px; }
+        .start-btn { background: linear-gradient(145deg, #e94560, #c23a51); color: white; border: none; font-size: 22px; font-weight: 800; padding: 18px 60px; border-radius: 50px; cursor: pointer; box-shadow: 0 10px 30px rgba(233, 69, 96, 0.4); transition: all 0.2s ease; margin-bottom: 25px; }
+        .start-btn:active { transform: scale(0.97); }
+        
+        .player-names-section { width: 100%; max-width: 420px; margin-bottom: 25px; }
+        .player-names-section h3 { font-size: 15px; font-weight: 600; margin-bottom: 12px; opacity: 0.85; text-align: center; }
+        .player-name-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .player-name-input { flex: 1; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 12px 14px; border-radius: 10px; font-size: 15px; font-weight: 500; }
+        .player-name-input::placeholder { color: rgba(255,255,255,0.4); }
+        .remove-player-btn { background: #c0392b; color: white; border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 18px; cursor: pointer; flex-shrink: 0; }
+        .remove-player-btn:active { background: #a93226; }
+
+        .language-section { width: 100%; max-width: 420px; margin-bottom: 25px; }
+        .language-section h3 { font-size: 15px; font-weight: 600; margin-bottom: 12px; opacity: 0.85; text-align: center; }
+        .language-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(95px, 1fr)); gap: 8px; }
+        .lang-btn { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: white; padding: 10px 8px; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 6px; justify-content: center; }
+        .lang-btn.active { background: #27ae60; border-color: #27ae60; }
+        .lang-btn:active { transform: scale(0.97); }
+
+        .rules-footer { width: 100%; max-width: 420px; margin-top: 15px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.15); text-align: center; }
+        .rules-btn { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.25); padding: 12px 28px; border-radius: 25px; font-size: 15px; font-weight: 600; cursor: pointer; }
+        .rules-btn:active { background: rgba(255,255,255,0.2); }
+
+        #main-screen { height: 100vh; display: none; flex-direction: column; }
+        .main-header { background-color: #1a1a2e; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 20px rgba(0,0,0,0.4); z-index: 50; flex-shrink: 0; }
+        .main-header h1 { font-size: 24px; font-weight: 800; letter-spacing: 1.5px; }
+        .new-game-btn { background: #e94560; color: white; border: none; padding: 10px 20px; font-size: 14px; font-weight: 700; border-radius: 25px; cursor: pointer; }
+        .new-game-btn:active { transform: scale(0.95); background: #c23a51; }
+        
+        #scoreboard { flex: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(115px, 1fr)); gap: 10px; padding: 14px; overflow-y: auto; align-content: start; }
+        
+        .player-card { background: #1a1a2e; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.35); display: flex; flex-direction: column; min-height: 175px; }
+        .player-header { padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; color: white; }
+        .player-name { font-size: 16px; font-weight: 700; letter-spacing: 0.5px; }
+        .add-btn { background: rgba(255,255,255,0.28); border: none; color: white; font-size: 11px; font-weight: 700; padding: 5px 11px; border-radius: 16px; cursor: pointer; }
+        .add-btn:active { background: rgba(255,255,255,0.45); transform: scale(0.94); }
+        .player-score { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 900; padding: 6px 8px; text-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+        .history-info { padding: 4px 12px 8px; font-size: 12px; opacity: 0.7; display: flex; justify-content: space-between; align-items: center; }
+        .history-btn { background: rgba(255,255,255,0.15); border: none; color: white; font-size: 11px; padding: 2px 8px; border-radius: 10px; cursor: pointer; }
+        
+        #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 200; padding: 0; }
+        .overlay-content { width: 100%; height: 100%; display: flex; flex-direction: column; background: linear-gradient(160deg, #1f1f3a, #16213e); }
+        .overlay-header { padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); flex-shrink: 0; }
+        .overlay-header h2 { font-size: 20px; font-weight: 800; }
+        .close-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 38px; height: 38px; border-radius: 50%; font-size: 18px; cursor: pointer; }
+        
+        .scoring-sections { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 20px; }
+        .section { background: rgba(255,255,255,0.06); border-radius: 16px; padding: 16px; }
+        .section-title { font-size: 15px; font-weight: 700; margin-bottom: 12px; opacity: 0.9; }
+        
+        .number-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .number-btn { background: rgba(255,255,255,0.12); border: 2px solid rgba(255,255,255,0.25); color: white; font-size: 22px; font-weight: 800; padding: 14px 6px; border-radius: 12px; cursor: pointer; min-height: 52px; }
+        .number-btn:active { background: rgba(255,255,255,0.3); }
+        .number-btn:disabled { opacity: 0.3; background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.1); cursor: not-allowed; }
+        
+        .flip7-banner { background: #f1c40f; color: #111; text-align: center; padding: 8px; border-radius: 10px; font-weight: 800; margin-top: 10px; font-size: 14px; }
+        
+        .x2-toggle { display: flex; gap: 10px; }
+        .x2-btn { flex: 1; padding: 14px; font-size: 16px; font-weight: 700; border-radius: 12px; border: 2px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: white; cursor: pointer; }
+        .x2-btn.active { background: #e67e22; border-color: #e67e22; color: white; }
+        
+        .bonus-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+        .bonus-btn { padding: 12px 8px; font-size: 18px; font-weight: 800; border-radius: 10px; border: 2px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: white; cursor: pointer; }
+        .bonus-btn.active { background: #27ae60; border-color: #27ae60; color: white; }
+        
+        .live-preview { background: #111122; border-radius: 16px; padding: 18px; margin-top: auto; flex-shrink: 0; }
+        .preview-row { display: flex; justify-content: space-between; font-size: 15px; margin-bottom: 6px; }
+        .preview-row.total { font-size: 22px; font-weight: 800; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.15); }
+        .preview-row .value { font-weight: 700; }
+        
+        .action-bar { padding: 16px; background: rgba(0,0,0,0.4); display: flex; gap: 10px; flex-shrink: 0; }
+        .action-bar button { flex: 1; padding: 15px; font-size: 16px; font-weight: 700; border-radius: 14px; border: none; cursor: pointer; }
+        .btn-undo { background: #555; color: white; }
+        .btn-cancel { background: #444; color: white; }
+        .btn-confirm { background: linear-gradient(145deg, #27ae60, #219a52); color: white; font-weight: 800; }
+        .action-bar button:active { transform: scale(0.97); }
+        
+        #history-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: none; align-items: center; justify-content: center; z-index: 300; padding: 20px; }
+        .history-content { background: #1a1a2e; border-radius: 20px; width: 100%; max-width: 380px; max-height: 70vh; overflow: hidden; display: flex; flex-direction: column; }
+        .history-header { padding: 18px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; }
+        .history-list { flex: 1; overflow-y: auto; padding: 8px 0; }
+        .history-entry { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .delete-entry { background: #c0392b; color: white; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; cursor: pointer; }
+        
+        #confirm-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: none; align-items: center; justify-content: center; z-index: 400; padding: 20px; }
+        .confirm-content { background: #1a1a2e; border-radius: 18px; width: 100%; max-width: 340px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); overflow: hidden; }
+        .confirm-body { padding: 24px 20px; text-align: center; font-size: 16px; line-height: 1.4; }
+        .confirm-actions { display: flex; border-top: 1px solid rgba(255,255,255,0.1); }
+        .confirm-actions button { flex: 1; padding: 16px; font-size: 16px; font-weight: 700; border: none; background: transparent; color: white; cursor: pointer; }
+        .confirm-actions button:first-child { border-right: 1px solid rgba(255,255,255,0.1); }
+        .confirm-actions .danger { color: #e74c3c; font-weight: 800; }
+        
+        #new-game-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: none; align-items: center; justify-content: center; z-index: 300; padding: 20px; }
+        
+        #rules-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 500; padding: 20px; }
+        .rules-content { background: #1a1a2e; border-radius: 20px; width: 100%; max-width: 480px; max-height: 80vh; overflow: hidden; display: flex; flex-direction: column; }
+        .rules-header { padding: 18px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; }
+        .rules-body { flex: 1; overflow-y: auto; padding: 20px; font-size: 14.5px; line-height: 1.55; }
+        .rules-body h4 { margin: 16px 0 6px; font-size: 15px; }
+        .rules-body ul { padding-left: 18px; margin-bottom: 12px; }
+        
+        @media (max-height: 700px) { .player-score { font-size: 28px; } .number-btn { font-size: 18px; min-height: 46px; } }
+    </style>
+</head>
+<body>
+    <div id="start-screen">
+        <h1 data-i18n="title">Flip7 Score</h1>
+        <p class="subtitle" data-i18n="subtitle">Up to 18 players • Official scoring</p>
+        
+        <div class="player-selector">
+            <div style="font-size:15px; opacity:0.75; margin-bottom:4px;" data-i18n="players_label">Number of players</div>
+            <div class="selector-controls">
+                <button class="selector-btn minus" onclick="changePlayerCount(-1)">−</button>
+                <div class="player-count-display" id="player-count-display">4</div>
+                <button class="selector-btn plus" onclick="changePlayerCount(1)">+</button>
+            </div>
+            <div class="max-hint" data-i18n="players_hint">1 – 18 players</div>
+        </div>
+        
+        <button class="start-btn" onclick="startGameWithSelection()" data-i18n="start_game">Start Game</button>
+        
+        <!-- Player Names -->
+        <div class="player-names-section">
+            <h3 data-i18n="player_names_label">Player names (optional)</h3>
+            <div id="player-names-list"></div>
+        </div>
+        
+        <div class="language-section">
+            <h3 data-i18n="language_label">Language</h3>
+            <div class="language-grid" id="language-grid"></div>
+        </div>
+
+        <div class="rules-footer">
+            <button class="rules-btn" onclick="showRulesModal()" data-i18n="rules_button">Show rules</button>
+        </div>
+    </div>
+
+    <div id="main-screen">
+        <div class="main-header">
+            <h1 data-i18n="title">Flip7 Score</h1>
+            <button class="new-game-btn" onclick="showNewGameModal()" data-i18n="new_game">New Game</button>
+        </div>
+        <div id="scoreboard"></div>
+    </div>
+
+    <div id="overlay">
+        <div class="overlay-content">
+            <div class="overlay-header">
+                <h2 id="overlay-player-name">Player</h2>
+                <button class="close-btn" onclick="cancelOverlay()">✕</button>
+            </div>
+            
+            <div class="scoring-sections">
+                <div class="section">
+                    <div class="section-title" data-i18n="section_numbers">1. Number Cards (max 7)</div>
+                    <div class="number-grid" id="number-grid"></div>
+                    <div id="flip7-warning" style="display:none; margin-top:10px;">
+                        <div class="flip7-banner" data-i18n="flip7_banner">🎉 FLIP 7! +15 Bonus</div>
+                    </div>
+                    <div style="margin-top:10px; font-size:14px; opacity:0.7;">
+                        <span data-i18n="numbers_sum">Number sum</span>: <span id="numbers-sum" style="font-weight:700; color:#fff;">0</span>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title" data-i18n="section_x2">2. x2 Multiplier</div>
+                    <div class="x2-toggle">
+                        <button class="x2-btn" id="x2-no" onclick="setX2(false)" data-i18n="x2_no">No x2</button>
+                        <button class="x2-btn" id="x2-yes" onclick="setX2(true)" data-i18n="x2_yes">x2 present</button>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title" data-i18n="section_bonus">3. Bonus Cards (+2 to +10)</div>
+                    <div class="bonus-grid" id="bonus-grid"></div>
+                </div>
+            </div>
+            
+            <div class="live-preview">
+                <div class="preview-row"><span data-i18n="preview_numbers">Numbers</span> <span class="value" id="preview-numbers">0</span></div>
+                <div class="preview-row" id="preview-x2-row" style="display:none;"><span data-i18n="preview_after_x2">after x2</span> <span class="value" id="preview-x2">0</span></div>
+                <div class="preview-row"><span data-i18n="preview_bonus">+ Bonus</span> <span class="value" id="preview-bonus">0</span></div>
+                <div class="preview-row" id="preview-flip7-row" style="display:none; color:#f1c40f;"><span data-i18n="preview_flip7">Flip 7 Bonus</span> <span class="value">+15</span></div>
+                <div class="preview-row total"><span data-i18n="preview_total">Round total</span> <span class="value" id="preview-total" style="font-size:26px;">0</span></div>
+            </div>
+            
+            <div class="action-bar">
+                <button class="btn-undo" onclick="undoLastNumber()" data-i18n="btn_undo">Undo</button>
+                <button class="btn-cancel" onclick="cancelOverlay()" data-i18n="btn_cancel">Cancel</button>
+                <button class="btn-confirm" onclick="confirmScore()" data-i18n="btn_confirm">Add to score</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="history-modal">
+        <div class="history-content">
+            <div class="history-header">
+                <h3 id="history-player-name" style="font-size:20px; font-weight:800;">History</h3>
+                <button onclick="closeHistoryModal()" style="background:rgba(255,255,255,0.2); border:none; color:white; width:36px; height:36px; border-radius:50%; font-size:18px;">✕</button>
+            </div>
+            <div class="history-list" id="history-list"></div>
+            <div style="padding:16px; border-top:1px solid rgba(255,255,255,0.1);">
+                <button onclick="deleteAllHistory()" style="width:100%; padding:12px; background:#c0392b; color:white; border:none; border-radius:12px; font-weight:700;" data-i18n="history_delete_all">Delete all rounds</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="confirm-modal">
+        <div class="confirm-content">
+            <div class="confirm-body" id="confirm-message">Are you sure?</div>
+            <div class="confirm-actions">
+                <button onclick="cancelConfirm()" data-i18n="btn_cancel">Cancel</button>
+                <button class="danger" onclick="executeConfirmAction()" data-i18n="btn_delete">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="new-game-modal" style="position:fixed; inset:0; background:rgba(0,0,0,0.75); display:none; align-items:center; justify-content:center; z-index:300; padding:20px;">
+        <div style="background:#1a1a2e; border-radius:20px; width:100%; max-width:360px; box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+            <div style="padding:22px 24px 16px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.1);">
+                <h3 style="font-size:22px; font-weight:800; margin-bottom:6px;" data-i18n="new_game_title">Start new game?</h3>
+                <p style="font-size:15px; opacity:0.75;" data-i18n="new_game_subtitle">All scores and histories will be deleted.</p>
+            </div>
+            <div style="padding:24px;">
+                <div style="background:rgba(255,255,255,0.08); border-radius:12px; padding:14px; margin-bottom:20px; text-align:center; font-size:15px;">
+                    <span data-i18n="currently">Currently</span> <strong id="modal-player-count" style="font-size:18px; color:#2ecc71;">4</strong> <span data-i18n="players">players</span>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:12px;">
+                    <button onclick="confirmSamePlayers()" style="width:100%; padding:16px; font-size:16px; font-weight:700; border:none; border-radius:14px; background:linear-gradient(145deg,#27ae60,#219a52); color:white;" data-i18n="same_players">Same number of players (reset scores only)</button>
+                    <button onclick="changePlayerCountAndRestart()" style="width:100%; padding:16px; font-size:16px; font-weight:700; border:none; border-radius:14px; background:#444; color:white;" data-i18n="change_players">Change number of players</button>
+                    <button onclick="closeNewGameModal()" style="width:100%; padding:14px; font-size:15px; background:transparent; color:#aaa; border:1px solid #555; border-radius:14px; margin-top:4px;" data-i18n="btn_cancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rules Modal -->
+    <div id="rules-modal">
+        <div class="rules-content">
+            <div class="rules-header">
+                <h3 style="font-size:20px; font-weight:800;" data-i18n="rules_title">Flip7 Rules</h3>
+                <button onclick="closeRulesModal()" style="background:rgba(255,255,255,0.2); border:none; color:white; width:36px; height:36px; border-radius:50%; font-size:18px;">✕</button>
+            </div>
+            <div class="rules-body">
+                <h4>Goal of the game</h4>
+                <p>Flip7 is a fast, tactical card game. The goal is to collect as many points as possible over several rounds without busting.</p>
+                
+                <h4>Round flow</h4>
+                <ul>
+                    <li>Players take turns drawing cards.</li>
+                    <li>There are <strong>Number cards (1–12)</strong> and <strong>Special cards</strong> (x2, +2, +4, +6, +8, +10, Flip 3, Flip 4, etc.).</li>
+                    <li>You may keep drawing until you have <strong>exactly 7 different number cards</strong> (Flip 7) or you bust.</li>
+                </ul>
+                
+                <h4>Scoring (official order)</h4>
+                <ol>
+                    <li><strong>Sum the number cards</strong> (only unique numbers count)</li>
+                    <li>Apply <strong>x2 multiplier</strong> (if present) only to the number sum</li>
+                    <li>Add <strong>Bonus cards</strong> (+2 to +10)</li>
+                    <li><strong>Flip 7 Bonus</strong>: +15 points if you have exactly 7 different number cards</li>
+                </ol>
+                
+                <h4>Important rules</h4>
+                <ul>
+                    <li>Each number (1–12) may appear only <strong>once</strong> per round.</li>
+                    <li>If you draw a number you already have → <strong>Bust</strong> (0 points this round).</li>
+                    <li>With <strong>Flip 7</strong> (exactly 7 different numbers) your round ends automatically with +15 bonus.</li>
+                    <li>The round ends for everyone as soon as someone reaches Flip 7.</li>
+                </ul>
+                
+                <p style="margin-top:16px; opacity:0.8; font-size:13px;">Tip: Use the scorer to see the correct scoring live during the game.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+            de: {
+                title: "Flip7 Score",
+                subtitle: "Bis zu 18 Spieler • Offizielle Wertung",
+                players_label: "Anzahl Spieler",
+                players_hint: "1 – 18 Spieler",
+                start_game: "Spiel starten",
+                language_label: "Sprache",
+                new_game: "Neues Spiel",
+                section_numbers: "1. Zahlenkarten (max. 7)",
+                section_x2: "2. x2 Multiplikator",
+                section_bonus: "3. Bonus-Karten (+2 bis +10)",
+                x2_no: "Kein x2",
+                x2_yes: "x2 vorhanden",
+                numbers_sum: "Summe Zahlen",
+                flip7_banner: "🎉 FLIP 7 ERREICHT! +15 Bonus",
+                preview_numbers: "Zahlen",
+                preview_after_x2: "nach x2",
+                preview_bonus: "+ Boni",
+                preview_flip7: "Flip 7 Bonus",
+                preview_total: "Endsumme diese Runde",
+                btn_undo: "Rückgängig",
+                btn_cancel: "Abbrechen",
+                btn_confirm: "Punkte übernehmen",
+                btn_delete: "Löschen",
+                history_delete_all: "Alle Runden löschen",
+                new_game_title: "Neues Spiel starten?",
+                new_game_subtitle: "Alle Punkte und Historien werden gelöscht.",
+                currently: "Aktuell",
+                players: "Spieler",
+                same_players: "Gleiche Spieleranzahl (nur Punkte zurücksetzen)",
+                change_players: "Spieleranzahl ändern",
+                rounds: "Runden",
+                history: "Historie",
+                add_points: "+ Punkte",
+                player_names_label: "Spielernamen (optional)",
+                rules_button: "Regeln anzeigen",
+                rules_title: "Flip7 Regeln",
+                rules_content: `<h4>Ziel des Spiels</h4><p>Flip7 ist ein schnelles, taktisches Kartenspiel. Ziel ist es, in mehreren Runden möglichst viele Punkte zu sammeln, ohne zu „busten“.</p><h4>Spielablauf pro Runde</h4><ul><li>Jeder Spieler bekommt nacheinander Karten.</li><li>Es gibt <strong>Zahlenkarten (1–12)</strong> und <strong>Sonderkarten</strong> (x2, +2, +4, +6, +8, +10, Flip 3, Flip 4 usw.).</li><li>Du darfst so lange Karten ziehen, bis du <strong>genau 7 verschiedene Zahlenkarten</strong> hast (Flip 7) oder du bustest.</li></ul><h4>Wertung (offizielle Reihenfolge)</h4><ol><li><strong>Zahlenkarten summieren</strong> (nur einzigartige Zahlen zählen)</li><li><strong>x2-Multiplikator</strong> (falls vorhanden) nur auf die Zahlensumme anwenden</li><li><strong>Bonus-Karten</strong> (+2 bis +10) addieren</li><li><strong>Flip-7-Bonus</strong>: +15 Punkte, wenn du genau 7 verschiedene Zahlenkarten hast</li></ol><h4>Wichtige Regeln</h4><ul><li>Jede Zahl (1–12) darf pro Runde nur <strong>einmal</strong> vorkommen.</li><li>Wenn du eine Zahl schon hast und dieselbe nochmal ziehst → <strong>Bust</strong> (0 Punkte diese Runde).</li><li>Bei <strong>Flip 7</strong> (genau 7 verschiedene Zahlen) endet deine Runde automatisch mit +15 Bonus.</li><li>Die Runde endet für alle, sobald jemand Flip 7 erreicht hat.</li></ul><p style="margin-top:16px; opacity:0.8; font-size:13px;">Tipp: Nutze den Punktezähler, um während des Spiels live die korrekte Wertung zu sehen.</p>`
+            },
+            en: {
+                title: "Flip7 Score",
+                subtitle: "Up to 18 players • Official scoring",
+                players_label: "Number of players",
+                players_hint: "1 – 18 players",
+                start_game: "Start Game",
+                language_label: "Language",
+                new_game: "New Game",
+                section_numbers: "1. Number Cards (max 7)",
+                section_x2: "2. x2 Multiplier",
+                section_bonus: "3. Bonus Cards (+2 to +10)",
+                x2_no: "No x2",
+                x2_yes: "x2 present",
+                numbers_sum: "Number sum",
+                flip7_banner: "🎉 FLIP 7! +15 Bonus",
+                preview_numbers: "Numbers",
+                preview_after_x2: "after x2",
+                preview_bonus: "+ Bonus",
+                preview_flip7: "Flip 7 Bonus",
+                preview_total: "Round total",
+                btn_undo: "Undo",
+                btn_cancel: "Cancel",
+                btn_confirm: "Add to score",
+                btn_delete: "Delete",
+                history_delete_all: "Delete all rounds",
+                new_game_title: "Start new game?",
+                new_game_subtitle: "All scores and histories will be deleted.",
+                currently: "Currently",
+                players: "players",
+                same_players: "Same number of players (reset scores only)",
+                change_players: "Change number of players",
+                rounds: "Rounds",
+                history: "History",
+                add_points: "+ Points",
+                player_names_label: "Player names (optional)",
+                rules_button: "Show rules",
+                rules_title: "Flip7 Rules",
+                rules_content: `<h4>Goal of the game</h4><p>Flip7 is a fast, tactical card game. The goal is to collect as many points as possible over several rounds without busting.</p><h4>Round flow</h4><ul><li>Players take turns drawing cards.</li><li>There are <strong>Number cards (1–12)</strong> and <strong>Special cards</strong> (x2, +2, +4, +6, +8, +10, Flip 3, Flip 4, etc.).</li><li>You may keep drawing until you have <strong>exactly 7 different number cards</strong> (Flip 7) or you bust.</li></ul><h4>Scoring (official order)</h4><ol><li><strong>Sum the number cards</strong> (only unique numbers count)</li><li>Apply <strong>x2 multiplier</strong> (if present) only to the number sum</li><li>Add <strong>Bonus cards</strong> (+2 to +10)</li><li><strong>Flip 7 Bonus</strong>: +15 points if you have exactly 7 different number cards</li></ol><h4>Important rules</h4><ul><li>Each number (1–12) may appear only <strong>once</strong> per round.</li><li>If you draw a number you already have → <strong>Bust</strong> (0 points this round).</li><li>With <strong>Flip 7</strong> (exactly 7 different numbers) your round ends automatically with +15 bonus.</li><li>The round ends for everyone as soon as someone reaches Flip 7.</li></ul><p style="margin-top:16px; opacity:0.8; font-size:13px;">Tip: Use the scorer to see the correct scoring live during the game.</p>`
+            },
+            es: {
+                title: "Flip7 Puntuación",
+                subtitle: "Hasta 18 jugadores • Puntuación oficial",
+                players_label: "Número de jugadores",
+                players_hint: "1 – 18 jugadores",
+                start_game: "Comenzar partida",
+                language_label: "Idioma",
+                new_game: "Nueva partida",
+                section_numbers: "1. Cartas numéricas (máx. 7)",
+                section_x2: "2. Multiplicador x2",
+                section_bonus: "3. Cartas de bonificación (+2 a +10)",
+                x2_no: "Sin x2",
+                x2_yes: "x2 presente",
+                numbers_sum: "Suma de números",
+                flip7_banner: "🎉 ¡FLIP 7! +15 Bonus",
+                preview_numbers: "Números",
+                preview_after_x2: "después de x2",
+                preview_bonus: "+ Bonos",
+                preview_flip7: "Bonus Flip 7",
+                preview_total: "Total de la ronda",
+                btn_undo: "Deshacer",
+                btn_cancel: "Cancelar",
+                btn_confirm: "Añadir puntuación",
+                btn_delete: "Eliminar",
+                history_delete_all: "Eliminar todas las rondas",
+                new_game_title: "¿Comenzar nueva partida?",
+                new_game_subtitle: "Se eliminarán todas las puntuaciones e historiales.",
+                currently: "Actualmente",
+                players: "jugadores",
+                same_players: "Mismo número de jugadores (solo reiniciar puntos)",
+                change_players: "Cambiar número de jugadores",
+                rounds: "Rondas",
+                history: "Historial",
+                add_points: "+ Puntos",
+                player_names_label: "Nombres de jugadores (opcional)",
+                rules_button: "Mostrar reglas",
+                rules_title: "Reglas de Flip7",
+                rules_content: `<h4>Objetivo del juego</h4><p>Flip7 es un juego de cartas rápido y táctico. El objetivo es conseguir la mayor cantidad de puntos posible en varias rondas sin pasarse.</p><h4>Desarrollo de la ronda</h4><ul><li>Los jugadores roban cartas por turnos.</li><li>Hay <strong>cartas de número (1–12)</strong> y <strong>cartas especiales</strong> (x2, +2, +4, +6, +8, +10, Flip 3, Flip 4, etc.).</li><li>Puedes seguir robando hasta tener <strong>exactamente 7 cartas de número diferentes</strong> (Flip 7) o te pases.</li></ul><h4>Puntuación (orden oficial)</h4><ol><li><strong>Sumar las cartas de número</strong> (solo cuentan los números únicos)</li><li>Aplicar el <strong>multiplicador x2</strong> (si existe) solo a la suma de números</li><li>Añadir las <strong>cartas de bonificación</strong> (+2 a +10)</li><li><strong>Bonus Flip 7</strong>: +15 puntos si tienes exactamente 7 cartas de número diferentes</li></ol><h4>Reglas importantes</h4><ul><li>Cada número (1–12) solo puede aparecer <strong>una vez</strong> por ronda.</li><li>Si robas un número que ya tienes → <strong>Te pasas</strong> (0 puntos esta ronda).</li><li>Con <strong>Flip 7</strong> (exactamente 7 números diferentes) tu ronda termina automáticamente con +15 bonus.</li><li>La ronda termina para todos cuando alguien consigue Flip 7.</li></ul><p style="margin-top:16px; opacity:0.8; font-size:13px;">Consejo: Usa el contador de puntos para ver la puntuación correcta en tiempo real.</p>`
+            },
+            ja: {
+                title: "Flip7 スコア",
+                subtitle: "最大18人 • 公式ルール対応",
+                players_label: "プレイヤー数",
+                players_hint: "1 – 18人",
+                start_game: "ゲーム開始",
+                language_label: "言語",
+                new_game: "新しいゲーム",
+                section_numbers: "1. ナンバーカード（最大7）",
+                section_x2: "2. x2 マルチプライヤー",
+                section_bonus: "3. ボーナスカード（+2〜+10）",
+                x2_no: "x2なし",
+                x2_yes: "x2あり",
+                numbers_sum: "数字の合計",
+                flip7_banner: "🎉 FLIP 7達成！ +15ボーナス",
+                preview_numbers: "数字",
+                preview_after_x2: "x2後",
+                preview_bonus: "+ ボーナス",
+                preview_flip7: "Flip 7ボーナス",
+                preview_total: "ラウンド合計",
+                btn_undo: "取り消し",
+                btn_cancel: "キャンセル",
+                btn_confirm: "スコアに追加",
+                btn_delete: "削除",
+                history_delete_all: "すべてのラウンドを削除",
+                new_game_title: "新しいゲームを開始しますか？",
+                new_game_subtitle: "すべてのスコアと履歴が削除されます。",
+                currently: "現在",
+                players: "人",
+                same_players: "同じ人数で開始（スコアのみリセット）",
+                change_players: "人数を変更",
+                rounds: "ラウンド",
+                history: "履歴",
+                add_points: "+ ポイント",
+                player_names_label: "プレイヤー名（任意）",
+                rules_button: "ルールを表示",
+                rules_title: "Flip7 ルール",
+                rules_content: `<h4>ゲームの目的</h4><p>Flip7は高速で戦略的なカードゲームです。目標は、数ラウンドにわたってできるだけ多くのポイントを集め、バストせずにプレイすることです。</p><h4>ラウンドの流れ</h4><ul><li>プレイヤーは順番にカードを引きます。</li><li><strong>数字カード（1〜12）</strong>と<strong>特殊カード</strong>（x2、+2、+4、+6、+8、+10、Flip 3、Flip 4など）があります。</li><li><strong>ちょうど7種類の異なる数字カード</strong>を手に入れる（Flip 7）か、バストするまでカードを引き続けることができます。</li></ul><h4>得点計算（公式順序）</h4><ol><li><strong>数字カードの合計</strong>（重複しない数字のみ）</li><li><strong>x2倍率</strong>（ある場合）を数字の合計にのみ適用</li><li><strong>ボーナスカード</strong>（+2〜+10）を加算</li><li><strong>Flip 7ボーナス</strong>：ちょうど7種類の数字カードがある場合 +15ポイント</li></ol><h4>重要なルール</h4><ul><li>各数字（1〜12）は1ラウンドに<strong>1回だけ</strong>登場できます。</li><li>すでに持っている数字をもう一度引くと → <strong>バスト</strong>（そのラウンド0点）。</li><li><strong>Flip 7</strong>（ちょうど7種類の数字）でラウンドが自動終了し、+15ボーナス。</li><li>誰かがFlip 7を達成すると、全員のラウンドが終了します。</li></ul><p style="margin-top:16px; opacity:0.8; font-size:13px;">ヒント：このカウンターを使って、プレイ中に正しい得点をリアルタイムで確認できます。</p>`
+            },
+            pt: {
+                title: "Flip7 Pontuação",
+                subtitle: "Até 18 jogadores • Pontuação oficial",
+                players_label: "Número de jogadores",
+                players_hint: "1 – 18 jogadores",
+                start_game: "Iniciar Jogo",
+                language_label: "Idioma",
+                new_game: "Novo Jogo",
+                section_numbers: "1. Cartas de Número (máx. 7)",
+                section_x2: "2. Multiplicador x2",
+                section_bonus: "3. Cartas Bônus (+2 a +10)",
+                x2_no: "Sem x2",
+                x2_yes: "x2 presente",
+                numbers_sum: "Soma dos números",
+                flip7_banner: "🎉 FLIP 7! +15 Bônus",
+                preview_numbers: "Números",
+                preview_after_x2: "após x2",
+                preview_bonus: "+ Bônus",
+                preview_flip7: "Bônus Flip 7",
+                preview_total: "Total da rodada",
+                btn_undo: "Desfazer",
+                btn_cancel: "Cancelar",
+                btn_confirm: "Adicionar pontuação",
+                btn_delete: "Excluir",
+                history_delete_all: "Excluir todas as rodadas",
+                new_game_title: "Iniciar novo jogo?",
+                new_game_subtitle: "Todas as pontuações e históricos serão excluídos.",
+                currently: "Atualmente",
+                players: "jogadores",
+                same_players: "Mesmo número de jogadores (apenas resetar pontos)",
+                change_players: "Alterar número de jogadores",
+                rounds: "Rodadas",
+                history: "Histórico",
+                add_points: "+ Pontos",
+                player_names_label: "Nomes dos jogadores (opcional)",
+                rules_button: "Mostrar regras",
+                rules_title: "Regras do Flip7",
+                rules_content: `<h4>Objetivo do jogo</h4><p>Flip7 é um jogo de cartas rápido e tático. O objetivo é acumular o máximo de pontos possível em várias rodadas sem estourar.</p><h4>Desenvolvimento da rodada</h4><ul><li>Os jogadores compram cartas por turnos.</li><li>Existem <strong>cartas de número (1–12)</strong> e <strong>cartas especiais</strong> (x2, +2, +4, +6, +8, +10, Flip 3, Flip 4 etc.).</li><li>Você pode continuar comprando até ter <strong>exatamente 7 cartas de número diferentes</strong> (Flip 7) ou estourar.</li></ul><h4>Pontuação (ordem oficial)</h4><ol><li><strong>Somar as cartas de número</strong> (apenas números únicos contam)</li><li>Aplicar o <strong>multiplicador x2</strong> (se existir) apenas na soma dos números</li><li>Adicionar as <strong>cartas de bônus</strong> (+2 a +10)</li><li><strong>Bônus Flip 7</strong>: +15 pontos se você tiver exatamente 7 cartas de número diferentes</li></ol><h4>Regras importantes</h4><ul><li>Cada número (1–12) só pode aparecer <strong>uma vez</strong> por rodada.</li><li>Se você comprar um número que já tem → <strong>Estoura</strong> (0 pontos nesta rodada).</li><li>Com <strong>Flip 7</strong> (exatamente 7 números diferentes) sua rodada termina automaticamente com +15 bônus.</li><li>A rodada termina para todos quando alguém consegue Flip 7.</li></ul><p style="margin-top:16px; opacity:0.8; font-size:13px;">Dica: Use o contador de pontos para ver a pontuação correta em tempo real durante o jogo.</p>`
+            },
+            ru: {
+                title: "Flip7 Счёт",
+                subtitle: "До 18 игроков • Официальные правила",
+                players_label: "Количество игроков",
+                players_hint: "1 – 18 игроков",
+                start_game: "Начать игру",
+                language_label: "Язык",
+                new_game: "Новая игра",
+                section_numbers: "1. Числовые карты (макс. 7)",
+                section_x2: "2. Множитель x2",
+                section_bonus: "3. Бонусные карты (+2 до +10)",
+                x2_no: "Без x2",
+                x2_yes: "Есть x2",
+                numbers_sum: "Сумма чисел",
+                flip7_banner: "🎉 FLIP 7! +15 бонус",
+                preview_numbers: "Числа",
+                preview_after_x2: "после x2",
+                preview_bonus: "+ Бонусы",
+                preview_flip7: "Бонус Flip 7",
+                preview_total: "Итого за раунд",
+                btn_undo: "Отменить",
+                btn_cancel: "Отмена",
+                btn_confirm: "Добавить очки",
+                btn_delete: "Удалить",
+                history_delete_all: "Удалить все раунды",
+                new_game_title: "Начать новую игру?",
+                new_game_subtitle: "Все очки и история будут удалены.",
+                currently: "Сейчас",
+                players: "игроков",
+                same_players: "То же количество игроков (только сброс очков)",
+                change_players: "Изменить количество игроков",
+                rounds: "Раунды",
+                history: "История",
+                add_points: "+ Очки",
+                player_names_label: "Имена игроков (необязательно)",
+                rules_button: "Показать правила",
+                rules_title: "Правила Flip7",
+                rules_content: `<h4>Цель игры</h4><p>Flip7 — быстрая и тактическая карточная игра. Цель — набрать как можно больше очков за несколько раундов, не «сгорев».</p><h4>Ход раунда</h4><ul><li>Игроки по очереди тянут карты.</li><li>Есть <strong>карты чисел (1–12)</strong> и <strong>специальные карты</strong> (x2, +2, +4, +6, +8, +10, Flip 3, Flip 4 и др.).</li><li>Можно продолжать тянуть карты, пока не соберёшь <strong>ровно 7 разных числовых карт</strong> (Flip 7) или не сгоришь.</li></ul><h4>Подсчёт очков (официальный порядок)</h4><ol><li><strong>Суммировать числовые карты</strong> (учитываются только уникальные числа)</li><li>Применить <strong>множитель x2</strong> (если есть) только к сумме чисел</li><li>Добавить <strong>бонусные карты</strong> (+2 до +10)</li><li><strong>Бонус Flip 7</strong>: +15 очков, если у тебя ровно 7 разных числовых карт</li></ol><h4>Важные правила</h4><ul><li>Каждое число (1–12) может появиться в раунде только <strong>один раз</strong>.</li><li>Если вытянешь число, которое уже есть → <strong>Сгораешь</strong> (0 очков за раунд).</li><li>При <strong>Flip 7</strong> (ровно 7 разных чисел) раунд автоматически заканчивается с бонусом +15.</li><li>Как только кто-то делает Flip 7, раунд заканчивается для всех.</li></ul><p style="margin-top:16px; opacity:0.8; font-size:13px;">Совет: Используй счётчик, чтобы видеть правильный подсчёт очков в реальном времени во время игры.</p>`
+            },
+            zh: {
+                title: "Flip7 记分",
+                subtitle: "最多18人 • 官方计分规则",
+                players_label: "玩家数量",
+                players_hint: "1 – 18人",
+                start_game: "开始游戏",
+                language_label: "语言",
+                new_game: "新游戏",
+                section_numbers: "1. 数字卡（最多7张）",
+                section_x2: "2. x2 倍率",
+                section_bonus: "3. 奖励卡（+2 至 +10）",
+                x2_no: "无 x2",
+                x2_yes: "有 x2",
+                numbers_sum: "数字总和",
+                flip7_banner: "🎉 FLIP 7！+15 奖励",
+                preview_numbers: "数字",
+                preview_after_x2: "x2后",
+                preview_bonus: "+ 奖励",
+                preview_flip7: "Flip 7 奖励",
+                preview_total: "本轮总分",
+                btn_undo: "撤销",
+                btn_cancel: "取消",
+                btn_confirm: "添加到分数",
+                btn_delete: "删除",
+                history_delete_all: "删除所有回合",
+                new_game_title: "开始新游戏？",
+                new_game_subtitle: "所有分数和历史记录将被删除。",
+                currently: "当前",
+                players: "玩家",
+                same_players: "相同玩家数（仅重置分数）",
+                change_players: "更改玩家数量",
+                rounds: "回合",
+                history: "历史",
+                add_points: "+ 分数",
+                player_names_label: "玩家姓名（可选）",
+                rules_button: "显示规则",
+                rules_title: "Flip7 规则",
+                rules_content: `<h4>游戏目标</h4><p>Flip7是一款快速且富有策略性的卡牌游戏。目标是在多轮游戏中尽可能多地获得分数，同时避免爆牌。</p><h4>回合流程</h4><ul><li>玩家轮流抽牌。</li><li>有<strong>数字牌（1-12）</strong>和<strong>特殊牌</strong>（x2、+2、+4、+6、+8、+10、Flip 3、Flip 4等）。</li><li>你可以继续抽牌，直到拥有<strong>恰好7种不同的数字牌</strong>（Flip 7）或爆牌为止。</li></ul><h4>计分（官方顺序）</h4><ol><li><strong>数字牌求和</strong>（仅计算不重复的数字）</li><li>如果有<strong>x2倍率</strong>，仅应用于数字总和</li><li>加上<strong>奖励牌</strong>（+2至+10）</li><li><strong>Flip 7奖励</strong>：拥有恰好7种不同数字牌时 +15分</li></ol><h4>重要规则</h4><ul><li>每个数字（1-12）每轮只能出现<strong>一次</strong>。</li><li>如果抽到已经拥有的数字 → <strong>爆牌</strong>（该轮0分）。</li><li>达成<strong>Flip 7</strong>（恰好7种不同数字）时自动结束该轮并获得+15奖励。</li><li>当有人达成Flip 7时，所有人的回合结束。</li></ul><p style="margin-top:16px; opacity:0.8; font-size:13px;">提示：使用计分器可以在游戏中实时查看正确得分。</p>`
+            },
+            fr: {
+                title: "Flip7 Score",
+                subtitle: "Jusqu'à 18 joueurs • Score officiel",
+                players_label: "Nombre de joueurs",
+                players_hint: "1 – 18 joueurs",
+                start_game: "Commencer la partie",
+                language_label: "Langue",
+                new_game: "Nouvelle partie",
+                section_numbers: "1. Cartes numéros (max 7)",
+                section_x2: "2. Multiplicateur x2",
+                section_bonus: "3. Cartes bonus (+2 à +10)",
+                x2_no: "Pas de x2",
+                x2_yes: "x2 présent",
+                numbers_sum: "Somme des numéros",
+                flip7_banner: "🎉 FLIP 7 ! +15 Bonus",
+                preview_numbers: "Numéros",
+                preview_after_x2: "après x2",
+                preview_bonus: "+ Bonus",
+                preview_flip7: "Bonus Flip 7",
+                preview_total: "Total de la manche",
+                btn_undo: "Annuler",
+                btn_cancel: "Annuler",
+                btn_confirm: "Ajouter au score",
+                btn_delete: "Supprimer",
+                history_delete_all: "Supprimer toutes les manches",
+                new_game_title: "Commencer une nouvelle partie ?",
+                new_game_subtitle: "Tous les scores et historiques seront supprimés.",
+                currently: "Actuellement",
+                players: "joueurs",
+                same_players: "Même nombre de joueurs (réinitialiser uniquement les points)",
+                change_players: "Changer le nombre de joueurs",
+                rounds: "Manches",
+                history: "Historique",
+                add_points: "+ Points",
+                player_names_label: "Noms des joueurs (optionnel)",
+                rules_button: "Afficher les règles",
+                rules_title: "Règles de Flip7",
+                rules_content: `<h4>Objectif du jeu</h4><p>Flip7 est un jeu de cartes rapide et stratégique. L’objectif est d’accumuler le maximum de points sur plusieurs manches sans bust.</p><h4>Déroulement d’une manche</h4><ul><li>Les joueurs piochent des cartes à tour de rôle.</li><li>Il y a des <strong>cartes numéros (1-12)</strong> et des <strong>cartes spéciales</strong> (x2, +2, +4, +6, +8, +10, Flip 3, Flip 4…).</li><li>Vous pouvez continuer à piocher jusqu’à avoir <strong>exactement 7 cartes numéros différentes</strong> (Flip 7) ou bust.</li></ul><h4>Calcul des points (ordre officiel)</h4><ol><li><strong>Somme des cartes numéros</strong> (seuls les numéros uniques comptent)</li><li>Appliquer le <strong>multiplicateur x2</strong> (si présent) uniquement sur la somme des numéros</li><li>Ajouter les <strong>cartes bonus</strong> (+2 à +10)</li><li><strong>Bonus Flip 7</strong> : +15 points si vous avez exactement 7 cartes numéros différentes</li></ol><h4>Règles importantes</h4><ul><li>Chaque numéro (1-12) ne peut apparaître qu’<strong>une seule fois</strong> par manche.</li><li>Si vous piochez un numéro déjà possédé → <strong>Bust</strong> (0 point cette manche).</li><li>Avec un <strong>Flip 7</strong> (exactement 7 numéros différents), votre manche se termine automatiquement avec +15 bonus.</li><li>Dès que quelqu’un fait Flip 7, la manche se termine pour tout le monde.</li></ul><p style="margin-top:16px; opacity:0.8; font-size:13px;">Astuce : Utilisez le compteur pour voir le score correct en temps réel pendant la partie.</p>`
+            },
+            it: {
+                title: "Flip7 Punteggio",
+                subtitle: "Fino a 18 giocatori • Punteggio ufficiale",
+                players_label: "Numero di giocatori",
+                players_hint: "1 – 18 giocatori",
+                start_game: "Inizia partita",
+                language_label: "Lingua",
+                new_game: "Nuova partita",
+                section_numbers: "1. Carte numero (max 7)",
+                section_x2: "2. Moltiplicatore x2",
+                section_bonus: "3. Carte bonus (+2 a +10)",
+                x2_no: "Senza x2",
+                x2_yes: "x2 presente",
+                numbers_sum: "Somma numeri",
+                flip7_banner: "🎉 FLIP 7! +15 Bonus",
+                preview_numbers: "Numeri",
+                preview_after_x2: "dopo x2",
+                preview_bonus: "+ Bonus",
+                preview_flip7: "Bonus Flip 7",
+                preview_total: "Totale round",
+                btn_undo: "Annulla",
+                btn_cancel: "Annulla",
+                btn_confirm: "Aggiungi al punteggio",
+                btn_delete: "Elimina",
+                history_delete_all: "Elimina tutti i round",
+                new_game_title: "Iniziare nuova partita?",
+                new_game_subtitle: "Tutti i punteggi e le storie verranno eliminati.",
+                currently: "Attualmente",
+                players: "giocatori",
+                same_players: "Stesso numero di giocatori (solo reset punti)",
+                change_players: "Cambia numero di giocatori",
+                rounds: "Round",
+                history: "Cronologia",
+                add_points: "+ Punti",
+                player_names_label: "Nomi dei giocatori (opzionale)",
+                rules_button: "Mostra le regole",
+                rules_title: "Regole di Flip7",
+                rules_content: `<h4>Obiettivo del gioco</h4><p>Flip7 è un gioco di carte veloce e strategico. L'obiettivo è accumulare il maggior numero di punti possibile in più round senza bustare.</p><h4>Svolgimento del round</h4><ul><li>I giocatori pescano carte a turno.</li><li>Ci sono <strong>carte numero (1-12)</strong> e <strong>carte speciali</strong> (x2, +2, +4, +6, +8, +10, Flip 3, Flip 4 ecc.).</li><li>Puoi continuare a pescare finché non hai <strong>esattamente 7 carte numero diverse</strong> (Flip 7) o busti.</li></ul><h4>Calcolo dei punti (ordine ufficiale)</h4><ol><li><strong>Somma delle carte numero</strong> (contano solo i numeri unici)</li><li>Applica il <strong>moltiplicatore x2</strong> (se presente) solo sulla somma dei numeri</li><li>Aggiungi le <strong>carte bonus</strong> (+2 a +10)</li><li><strong>Bonus Flip 7</strong>: +15 punti se hai esattamente 7 carte numero diverse</li></ol><h4>Regole importanti</h4><ul><li>Ogni numero (1-12) può apparire solo <strong>una volta</strong> per round.</li><li>Se peschi un numero che già possiedi → <strong>Bust</strong> (0 punti quel round).</li><li>Con <strong>Flip 7</strong> (esattamente 7 numeri diversi) il tuo round finisce automaticamente con +15 bonus.</li><li>Non appena qualcuno fa Flip 7, il round finisce per tutti.</li></ul><p style="margin-top:16px; opacity:0.8; font-size:13px;">Consiglio: Usa il contapunti per vedere il punteggio corretto in tempo reale durante la partita.</p>`
+            },
+            hu: {
+                title: "Flip7 Pontszám",
+                subtitle: "Legfeljebb 18 játékos • Hivatalos pontozás",
+                players_label: "Játékosok száma",
+                players_hint: "1 – 18 játékos",
+                start_game: "Játék indítása",
+                language_label: "Nyelv",
+                new_game: "Új játék",
+                section_numbers: "1. Számkártyák (max. 7)",
+                section_x2: "2. x2 szorzó",
+                section_bonus: "3. Bónusz kártyák (+2-től +10-ig)",
+                x2_no: "Nincs x2",
+                x2_yes: "Van x2",
+                numbers_sum: "Számok összege",
+                flip7_banner: "🎉 FLIP 7! +15 bónusz",
+                preview_numbers: "Számok",
+                preview_after_x2: "x2 után",
+                preview_bonus: "+ Bónusz",
+                preview_flip7: "Flip 7 bónusz",
+                preview_total: "Kör összesen",
+                btn_undo: "Visszavonás",
+                btn_cancel: "Mégse",
+                btn_confirm: "Pontszám hozzáadása",
+                btn_delete: "Törlés",
+                history_delete_all: "Összes kör törlése",
+                new_game_title: "Új játék indítása?",
+                new_game_subtitle: "Minden pontszám és előzmény törlődik.",
+                currently: "Jelenleg",
+                players: "játékos",
+                same_players: "Ugyanannyi játékos (csak pontok nullázása)",
+                change_players: "Játékosszám megváltoztatása",
+                rounds: "Körök",
+                history: "Előzmények",
+                add_points: "+ Pontok",
+                player_names_label: "Játékosnevek (opcionális)",
+                rules_button: "Szabályok megjelenítése",
+                rules_title: "Flip7 szabályok",
+                rules_content: `<h4>A játék célja</h4><p>A Flip7 egy gyors, taktikai kártyajáték. A cél, hogy több körön keresztül minél több pontot szerezz, anélkül hogy „bust” (elfelejted a lapokat).</p><h4>Kör menete</h4><ul><li>A játékosok sorban húznak lapokat.</li><li>Vannak <strong>számkártyák (1–12)</strong> és <strong>különleges kártyák</strong> (x2, +2, +4, +6, +8, +10, Flip 3, Flip 4 stb.).</li><li>Addig húzhatsz, amíg <strong>pontosan 7 különböző számkártyád</strong> nincs (Flip 7), vagy bustolsz.</li></ul><h4>Pontozás (hivatalos sorrend)</h4><ol><li><strong>Számkártyák összeadása</strong> (csak az egyedi számok számítanak)</li><li>Ha van <strong>x2 szorzó</strong>, csak a számok összegére vonatkozik</li><li><strong>Bónusz kártyák</strong> hozzáadása (+2-től +10-ig)</li><li><strong>Flip 7 bónusz</strong>: +15 pont, ha pontosan 7 különböző számkártyád van</li></ol><h4>Fontos szabályok</h4><ul><li>Minden szám (1–12) csak <strong>egyszer</strong> jelenhet meg körönként.</li><li>Ha már meglévő számot húzol → <strong>Bust</strong> (0 pont az adott körben).</li><li><strong>Flip 7</strong> (pontosan 7 különböző szám) esetén a köröd automatikusan +15 bónusszal zárul.</li><li>Amikor valaki Flip 7-et ér el, mindenki köre véget ér.</li></ul><p style="margin-top:16px; opacity:0.8; font-size:13px;">Tipp: Használd a pontszámlálót, hogy a játék közben valós időben lásd a helyes pontszámot.</p>`
+            },
+            ko: {
+                title: "Flip7 점수",
+                subtitle: "최대 18명 • 공식 채점",
+                players_label: "플레이어 수",
+                players_hint: "1 – 18명",
+                start_game: "게임 시작",
+                language_label: "언어",
+                new_game: "새 게임",
+                section_numbers: "1. 숫자 카드 (최대 7장)",
+                section_x2: "2. x2 배율",
+                section_bonus: "3. 보너스 카드 (+2 ~ +10)",
+                x2_no: "x2 없음",
+                x2_yes: "x2 있음",
+                numbers_sum: "숫자 합계",
+                flip7_banner: "🎉 FLIP 7! +15 보너스",
+                preview_numbers: "숫자",
+                preview_after_x2: "x2 후",
+                preview_bonus: "+ 보너스",
+                preview_flip7: "Flip 7 보너스",
+                preview_total: "라운드 총점",
+                btn_undo: "실행 취소",
+                btn_cancel: "취소",
+                btn_confirm: "점수 추가",
+                btn_delete: "삭제",
+                history_delete_all: "모든 라운드 삭제",
+                new_game_title: "새 게임을 시작할까요?",
+                new_game_subtitle: "모든 점수와 기록이 삭제됩니다。",
+                currently: "현재",
+                players: "명",
+                same_players: "같은 인원수 (점수만 초기화)",
+                change_players: "인원수 변경",
+                rounds: "라운드",
+                history: "기록",
+                add_points: "+ 점수",
+                player_names_label: "플레이어 이름 (선택)",
+                rules_button: "규칙 보기",
+                rules_title: "Flip7 규칙",
+                rules_content: `<h4>게임 목표</h4><p>Flip7은 빠르고 전략적인 카드 게임입니다. 목표는 여러 라운드에 걸쳐 최대한 많은 점수를 얻는 것입니다. (버스트 없이)</p><h4>라운드 진행</h4><ul><li>플레이어들은 차례대로 카드를 뽑습니다.</li><li><strong>숫자 카드(1~12)</strong>와 <strong>특수 카드</strong>(x2, +2, +4, +6, +8, +10, Flip 3, Flip 4 등)가 있습니다.</li><li><strong>정확히 7종류의 다른 숫자 카드</strong>를 모을 때까지(Flip 7) 또는 버스트할 때까지 계속 뽑을 수 있습니다.</li></ul><h4>점수 계산 (공식 순서)</h4><ol><li><strong>숫자 카드 합산</strong> (중복되지 않는 숫자만)</li><li><strong>x2 배율</strong>이 있으면 숫자 합에만 적용</li><li><strong>보너스 카드</strong> (+2 ~ +10) 추가</li><li><strong>Flip 7 보너스</strong>: 정확히 7종류의 숫자 카드가 있으면 +15점</li></ol><h4>중요 규칙</h4><ul><li>각 숫자(1~12)는 한 라운드에 <strong>한 번만</strong> 나올 수 있습니다.</li><li>이미 가진 숫자를 다시 뽑으면 → <strong>버스트</strong> (해당 라운드 0점)</li><li><strong>Flip 7</strong> (정확히 7종류의 숫자)을 달성하면 자동으로 라운드가 종료되고 +15 보너스</li><li>누군가 Flip 7을 달성하면 모든 플레이어의 라운드가 종료됩니다.</li></ul><p style="margin-top:16px; opacity:0.8; font-size:13px;">팁: 이 카운터를 사용하면 게임 중 실시간으로 정확한 점수를 확인할 수 있습니다.</p>`
+            },
+            tr: {
+                title: "Flip7 Puan",
+                subtitle: "18 oyuncuya kadar • Resmi puanlama",
+                players_label: "Oyuncu sayısı",
+                players_hint: "1 – 18 oyuncu",
+                start_game: "Oyunu Başlat",
+                language_label: "Dil",
+                new_game: "Yeni Oyun",
+                section_numbers: "1. Sayı Kartları (maks. 7)",
+                section_x2: "2. x2 Çarpanı",
+                section_bonus: "3. Bonus Kartları (+2'den +10'a)",
+                x2_no: "x2 yok",
+                x2_yes: "x2 var",
+                numbers_sum: "Sayı toplamı",
+                flip7_banner: "🎉 FLIP 7! +15 Bonus",
+                preview_numbers: "Sayılar",
+                preview_after_x2: "x2 sonrası",
+                preview_bonus: "+ Bonus",
+                preview_flip7: "Flip 7 Bonusu",
+                preview_total: "Tur toplamı",
+                btn_undo: "Geri Al",
+                btn_cancel: "İptal",
+                btn_confirm: "Puana Ekle",
+                btn_delete: "Sil",
+                history_delete_all: "Tüm turları sil",
+                new_game_title: "Yeni oyun başlatılsın mı?",
+                new_game_subtitle: "Tüm puanlar ve geçmiş silinecek.",
+                currently: "Şu anda",
+                players: "oyuncu",
+                same_players: "Aynı oyuncu sayısı (sadece puanları sıfırla)",
+                change_players: "Oyuncu sayısını değiştir",
+                rounds: "Turlar",
+                history: "Geçmiş",
+                add_points: "+ Puan",
+                player_names_label: "Oyuncu isimleri (isteğe bağlı)",
+                rules_button: "Kuralları göster",
+                rules_title: "Flip7 Kuralları",
+                rules_content: `<h4>Oyun amacı</h4><p>Flip7 hızlı ve stratejik bir kart oyunudur. Amaç, birkaç tur boyunca mümkün olduğunca fazla puan toplamaktır (bust olmadan).</p><h4>Tur akışı</h4><ul><li>Oyuncular sırayla kart çeker.</li><li><strong>Sayı kartları (1–12)</strong> ve <strong>özel kartlar</strong> (x2, +2, +4, +6, +8, +10, Flip 3, Flip 4 vb.) vardır.</li><li><strong>Tam olarak 7 farklı sayı kartı</strong>na ulaşana kadar (Flip 7) veya bust olana kadar kart çekmeye devam edebilirsin.</li></ul><h4>Puanlama (resmi sıralama)</h4><ol><li><strong>Sayı kartlarını toplama</strong> (sadece benzersiz sayılar sayılır)</li><li>Varsa <strong>x2 çarpanı</strong> sadece sayı toplamına uygulanır</li><li><strong>Bonus kartları</strong> ekle (+2’den +10’a)</li><li><strong>Flip 7 bonusu</strong>: Tam olarak 7 farklı sayı kartın varsa +15 puan</li></ol><h4>Önemli kurallar</h4><ul><li>Her sayı (1–12) her turda sadece <strong>bir kez</strong> çıkabilir.</li><li>Zaten sahip olduğun bir sayıyı tekrar çekersen → <strong>Bust</strong> (o tur 0 puan).</li><li><strong>Flip 7</strong> (tam olarak 7 farklı sayı) yaptığında turun otomatik olarak +15 bonusla biter.</li><li>Biri Flip 7 yaptığında herkesin turu biter.</li></ul><p style="margin-top:16px; opacity:0.8; font-size:13px;">İpucu: Bu sayaç sayesinde oyun sırasında doğru puanı canlı olarak görebilirsin.</p>`
+            }
+        };
+
+        let currentLang = localStorage.getItem('flip7_lang') || 'de';
+        let players = [];
+        let playerNames = [];
+        let currentOverlayPlayerIndex = null;
+        let currentHistoryPlayerIndex = null;
+        let confirmCallback = null;
+        let selectedNumbers = [];
+        let hasX2 = false;
+        let selectedBonuses = [];
+        let selectedPlayerCount = 4;
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('flip7_lang', lang);
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                } else if (translations['en'] && translations['en'][key]) {
+                    el.innerHTML = translations['en'][key];
+                }
+            });
+            
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+        }
+
+        function generateLanguageSelector() {
+            const container = document.getElementById('language-grid');
+            container.innerHTML = '';
+            const languages = [
+                { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+                { code: 'en', name: 'English', flag: '🇬🇧' },
+                { code: 'es', name: 'Español', flag: '🇪🇸' },
+                { code: 'ja', name: '日本語', flag: '🇯🇵' },
+                { code: 'pt', name: 'Português (BR)', flag: '🇧🇷' },
+                { code: 'ru', name: 'Русский', flag: '🇷🇺' },
+                { code: 'zh', name: '中文 (简体)', flag: '🇨🇳' },
+                { code: 'fr', name: 'Français', flag: '🇫🇷' },
+                { code: 'it', name: 'Italiano', flag: '🇮🇹' },
+                { code: 'hu', name: 'Magyar', flag: '🇭🇺' },
+                { code: 'ko', name: '한국어', flag: '🇰🇷' },
+                { code: 'tr', name: 'Türkçe', flag: '🇹🇷' }
+            ];
+            languages.forEach(lang => {
+                const btn = document.createElement('button');
+                btn.className = 'lang-btn';
+                btn.dataset.lang = lang.code;
+                btn.innerHTML = `${lang.flag} ${lang.name}`;
+                if (lang.code === currentLang) btn.classList.add('active');
+                btn.onclick = () => setLanguage(lang.code);
+                container.appendChild(btn);
+            });
+        }
+
+        function updatePlayerCountDisplay() {
+            const display = document.getElementById('player-count-display');
+            display.textContent = selectedPlayerCount;
+            document.querySelector('.selector-btn.minus').disabled = selectedPlayerCount <= 1;
+            document.querySelector('.selector-btn.plus').disabled = selectedPlayerCount >= 18;
+        }
+
+        function changePlayerCount(delta) {
+            const newCount = selectedPlayerCount + delta;
+            if (newCount < 1 || newCount > 18) return;
+
+            if (newCount > selectedPlayerCount) {
+                for (let i = selectedPlayerCount; i < newCount; i++) {
+                    playerNames.push('');
+                }
+            } else {
+                playerNames = playerNames.slice(0, newCount);
+            }
+
+            selectedPlayerCount = newCount;
+            updatePlayerCountDisplay();
+            renderPlayerNameInputs();
+        }
+
+        function renderPlayerNameInputs() {
+            const container = document.getElementById('player-names-list');
+            if (!container) return;
+            container.innerHTML = '';
+
+            for (let i = 0; i < selectedPlayerCount; i++) {
+                const row = document.createElement('div');
+                row.className = 'player-name-row';
+
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'player-name-input';
+                input.placeholder = (currentLang === 'de' ? `Spieler ${i + 1}` : `Player ${i + 1}`);
+                input.value = playerNames[i] || '';
+
+                input.oninput = () => {
+                    playerNames[i] = input.value.trim();
+                };
+
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-player-btn';
+                removeBtn.innerHTML = '✕';
+                removeBtn.onclick = () => removePlayerAtIndex(i);
+
+                row.appendChild(input);
+                row.appendChild(removeBtn);
+                container.appendChild(row);
+            }
+        }
+
+        function removePlayerAtIndex(index) {
+            playerNames.splice(index, 1);
+            while (playerNames.length < selectedPlayerCount) playerNames.push('');
+            playerNames = playerNames.slice(0, selectedPlayerCount - 1);
+
+            selectedPlayerCount = Math.max(1, selectedPlayerCount - 1);
+            updatePlayerCountDisplay();
+            renderPlayerNameInputs();
+        }
+
+        function startGameWithSelection() { startGame(selectedPlayerCount); }
+
+        function startGame(numPlayers) {
+            if (numPlayers < 1 || numPlayers > 18) numPlayers = 4;
+            players = [];
+            for (let i = 0; i < numPlayers; i++) {
+                const customName = (playerNames[i] && playerNames[i].trim() !== '') ? playerNames[i].trim() : `${i + 1}`;
+                players.push({
+                    id: i + 1,
+                    name: customName,
+                    score: 0,
+                    history: [],
+                    color: playerColors[i % playerColors.length]
+                });
+            }
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('main-screen').style.display = 'flex';
+            renderScoreboard();
+        }
+
+        function renderScoreboard() {
+            const container = document.getElementById('scoreboard');
+            container.innerHTML = '';
+            players.forEach((player, index) => {
+                const card = document.createElement('div');
+                card.className = 'player-card';
+                const header = document.createElement('div');
+                header.className = 'player-header';
+                header.style.background = player.color.gradient;
+                header.innerHTML = `<div class="player-name">${player.name}</div><button class="add-btn" data-i18n="add_points">+ Points</button>`;
+                header.querySelector('.add-btn').onclick = e => { e.stopImmediatePropagation(); openScoringOverlay(index); };
+                const scoreDiv = document.createElement('div');
+                scoreDiv.className = 'player-score';
+                scoreDiv.style.color = '#ffffff';
+                scoreDiv.textContent = player.score;
+                const hist = document.createElement('div');
+                hist.className = 'history-info';
+                hist.innerHTML = `<span data-i18n="rounds">Rounds</span>: ${player.history.length} <button class="history-btn" onclick="event.stopImmediatePropagation(); showHistoryModal(${index})" data-i18n="history">History</button>`;
+                card.onclick = () => openScoringOverlay(index);
+                card.appendChild(header);
+                card.appendChild(scoreDiv);
+                card.appendChild(hist);
+                container.appendChild(card);
+            });
+        }
+
+        const playerColors = [
+            { gradient: 'linear-gradient(160deg, #a93226, #c0392b, #e74c3c)' },
+            { gradient: 'linear-gradient(160deg, #1f618d, #2980b9, #3498db)' },
+            { gradient: 'linear-gradient(160deg, #1e8449, #27ae60, #2ecc71)' },
+            { gradient: 'linear-gradient(160deg, #d35400, #e67e22, #f39c12)' },
+            { gradient: 'linear-gradient(160deg, #6c3483, #8e44ad, #9b59b6)' },
+            { gradient: 'linear-gradient(160deg, #117a65, #16a085, #1abc9c)' }
+        ];
+
+        function openScoringOverlay(playerIndex) {
+            currentOverlayPlayerIndex = playerIndex;
+            selectedNumbers = [];
+            hasX2 = false;
+            selectedBonuses = [];
+            const overlay = document.getElementById('overlay');
+            const player = players[playerIndex];
+            overlay.querySelector('.overlay-content').style.background = player.color.gradient;
+            document.getElementById('overlay-player-name').textContent = `Player ${player.name}`;
+            generateNumberButtons();
+            generateBonusButtons();
+            resetX2Buttons();
+            document.getElementById('flip7-warning').style.display = 'none';
+            updateAllPreviews();
+            overlay.style.display = 'flex';
+        }
+
+        function generateNumberButtons() {
+            const grid = document.getElementById('number-grid');
+            grid.innerHTML = '';
+            for (let i = 1; i <= 12; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'number-btn';
+                btn.textContent = i;
+                btn.onclick = () => toggleNumber(i, btn);
+                grid.appendChild(btn);
+            }
+        }
+
+        function toggleNumber(value, btn) {
+            if (!selectedNumbers.includes(value) && selectedNumbers.length >= 7) return;
+            if (selectedNumbers.includes(value)) {
+                selectedNumbers = selectedNumbers.filter(v => v !== value);
+                btn.style.background = 'rgba(255,255,255,0.12)';
+                btn.style.borderColor = 'rgba(255,255,255,0.25)';
+            } else {
+                selectedNumbers.push(value);
+                btn.style.background = '#27ae60';
+                btn.style.borderColor = '#27ae60';
+            }
+            document.getElementById('flip7-warning').style.display = selectedNumbers.length === 7 ? 'block' : 'none';
+            updateAllPreviews();
+        }
+
+        function undoLastNumber() {
+            if (selectedNumbers.length === 0) return;
+            const last = selectedNumbers.pop();
+            document.querySelectorAll('#number-grid .number-btn').forEach(btn => {
+                if (parseInt(btn.textContent) === last) {
+                    btn.style.background = 'rgba(255,255,255,0.12)';
+                    btn.style.borderColor = 'rgba(255,255,255,0.25)';
+                }
+            });
+            document.getElementById('flip7-warning').style.display = selectedNumbers.length === 7 ? 'block' : 'none';
+            updateAllPreviews();
+        }
+
+        function setX2(isX2) {
+            hasX2 = isX2;
+            document.getElementById('x2-yes').classList.toggle('active', isX2);
+            document.getElementById('x2-no').classList.toggle('active', !isX2);
+            updateAllPreviews();
+        }
+
+        function resetX2Buttons() {
+            hasX2 = false;
+            document.getElementById('x2-yes').classList.remove('active');
+            document.getElementById('x2-no').classList.add('active');
+        }
+
+        function generateBonusButtons() {
+            const grid = document.getElementById('bonus-grid');
+            grid.innerHTML = '';
+            [2,4,6,8,10].forEach(val => {
+                const btn = document.createElement('button');
+                btn.className = 'bonus-btn';
+                btn.textContent = `+${val}`;
+                btn.onclick = () => toggleBonus(val, btn);
+                grid.appendChild(btn);
+            });
+        }
+
+        function toggleBonus(value, btn) {
+            if (selectedBonuses.includes(value)) {
+                selectedBonuses = selectedBonuses.filter(v => v !== value);
+                btn.classList.remove('active');
+            } else {
+                selectedBonuses.push(value);
+                btn.classList.add('active');
+            }
+            updateAllPreviews();
+        }
+
+        function calculateScore() {
+            const ns = selectedNumbers.reduce((a,b)=>a+b,0);
+            const afterX2 = hasX2 ? ns*2 : ns;
+            const bs = selectedBonuses.reduce((a,b)=>a+b,0);
+            let total = afterX2 + bs;
+            if (selectedNumbers.length === 7) total += 15;
+            return { numbersSum: ns, afterX2, bonusSum: bs, isFlip7: selectedNumbers.length === 7, total };
+        }
+
+        function updateAllPreviews() {
+            const c = calculateScore();
+            document.getElementById('numbers-sum').textContent = c.numbersSum;
+            document.getElementById('preview-numbers').textContent = c.numbersSum;
+            const x2r = document.getElementById('preview-x2-row');
+            if (hasX2 && c.numbersSum > 0) { x2r.style.display = 'flex'; document.getElementById('preview-x2').textContent = c.afterX2; } else { x2r.style.display = 'none'; }
+            document.getElementById('preview-bonus').textContent = '+' + c.bonusSum;
+            document.getElementById('preview-flip7-row').style.display = c.isFlip7 ? 'flex' : 'none';
+            document.getElementById('preview-total').textContent = c.total;
+        }
+
+        function confirmScore() {
+            if (currentOverlayPlayerIndex === null) return;
+            const c = calculateScore();
+            if (c.total <= 0) { alert("No points to add."); return; }
+            const p = players[currentOverlayPlayerIndex];
+            p.score += c.total;
+            p.history.push(c.total);
+            closeOverlay();
+            renderScoreboard();
+        }
+
+        function cancelOverlay() { document.getElementById('overlay').style.display = 'none'; currentOverlayPlayerIndex = null; }
+
+        function closeOverlay() {
+            document.getElementById('overlay').style.display = 'none';
+            currentOverlayPlayerIndex = null; selectedNumbers = []; hasX2 = false; selectedBonuses = [];
+        }
+
+        function showHistoryModal(idx) {
+            currentHistoryPlayerIndex = idx;
+            const modal = document.getElementById('history-modal');
+            const list = document.getElementById('history-list');
+            const p = players[idx];
+            document.getElementById('history-player-name').textContent = `Player ${p.name} - History`;
+            list.innerHTML = p.history.length === 0 ? '<div style="padding:30px;text-align:center;opacity:0.6;">No rounds yet.</div>' : '';
+            p.history.forEach((sc, i) => {
+                const div = document.createElement('div');
+                div.className = 'history-entry';
+                div.innerHTML = `<div>Round ${i+1}: <strong>+${sc}</strong></div><button class="delete-entry" onclick="deleteHistoryEntry(${i})">🗑</button>`;
+                list.appendChild(div);
+            });
+            modal.style.display = 'flex';
+        }
+
+        function deleteHistoryEntry(i) {
+            const p = players[currentHistoryPlayerIndex];
+            showCustomConfirm(`Delete round ${i+1} with +${p.history[i]} points?`, () => {
+                const rem = p.history.splice(i,1)[0];
+                p.score -= rem;
+                renderScoreboard();
+                showHistoryModal(currentHistoryPlayerIndex);
+            });
+        }
+
+        function deleteAllHistory() {
+            const p = players[currentHistoryPlayerIndex];
+            showCustomConfirm(`Delete all ${p.history.length} rounds for this player?`, () => {
+                const tot = p.history.reduce((a,b)=>a+b,0);
+                p.score -= tot;
+                p.history = [];
+                renderScoreboard();
+                closeHistoryModal();
+            });
+        }
+
+        function closeHistoryModal() { document.getElementById('history-modal').style.display = 'none'; currentHistoryPlayerIndex = null; }
+
+        function showCustomConfirm(msg, cb) {
+            document.getElementById('confirm-message').innerHTML = msg;
+            confirmCallback = cb;
+            document.getElementById('confirm-modal').style.display = 'flex';
+        }
+        function executeConfirmAction() { if (confirmCallback) confirmCallback(); closeCustomConfirm(); }
+        function cancelConfirm() { closeCustomConfirm(); }
+        function closeCustomConfirm() { document.getElementById('confirm-modal').style.display = 'none'; confirmCallback = null; }
+
+        function showNewGameModal() {
+            document.getElementById('modal-player-count').textContent = players.length;
+            document.getElementById('new-game-modal').style.display = 'flex';
+        }
+        function closeNewGameModal() { document.getElementById('new-game-modal').style.display = 'none'; }
+        function confirmSamePlayers() {
+            closeNewGameModal();
+            players.forEach(p => { p.score = 0; p.history = []; });
+            renderScoreboard();
+        }
+        function changePlayerCountAndRestart() {
+            closeNewGameModal();
+            if (players.length > 0) selectedPlayerCount = players.length;
+            document.getElementById('main-screen').style.display = 'none';
+            document.getElementById('start-screen').style.display = 'flex';
+            updatePlayerCountDisplay();
+            renderPlayerNameInputs();
+        }
+
+        function showRulesModal() {
+            const body = document.querySelector('#rules-modal .rules-body');
+            const content = translations[currentLang]?.rules_content || translations['en'].rules_content;
+            body.innerHTML = content;
+            document.getElementById('rules-modal').style.display = 'flex';
+        }
+        function closeRulesModal() {
+            document.getElementById('rules-modal').style.display = 'none';
+        }
+
+        function init() {
+            document.getElementById('start-screen').style.display = 'flex';
+            document.getElementById('main-screen').style.display = 'none';
+            
+            playerNames = new Array(selectedPlayerCount).fill('');
+            
+            generateLanguageSelector();
+            setLanguage(currentLang);
+            updatePlayerCountDisplay();
+            renderPlayerNameInputs();
+        }
+        window.onload = init;
+    </script>
+</body>
+</html>
